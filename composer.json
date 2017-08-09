@@ -1,0 +1,20 @@
+{
+    "name": "mungurs/first-data-latvia-omnipay",
+    "description": "First Data Latvia omnipay package",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Martin Ungur",
+            "email": "mungurs@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": { "Omnipay\\FirstDataLatvia\\" : "src/" }
+    },
+    "require": {
+      "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+      "omnipay/tests": "~2.0"
+    }
+}
