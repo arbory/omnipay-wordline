@@ -22,7 +22,12 @@ class PurchaseResponse extends AbstractResponse  implements RedirectResponseInte
 
     public function isRedirect()
     {
-        return true;
+        // On error do not redirect further
+        if(isset($this->data['error'])){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public function getRedirectMethod()
