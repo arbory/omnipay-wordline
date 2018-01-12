@@ -16,7 +16,7 @@ class ReversalRequest extends AbstractRequest
         $data = [
             'command'           => 'r',
             'trans_id'          => $this->getTransactionReference(),
-            'amount'            => $this->getAmount()
+            'amount'            => $this->getAmountInteger()
         ];
 
         return $data;
