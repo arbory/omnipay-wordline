@@ -22,12 +22,12 @@ class PurchaseResponse extends AbstractResponse  implements RedirectResponseInte
 
     public function isRedirect()
     {
-        // On error do not redirect further
+        //on blacklisted client ip error will be returned
         if(isset($this->data['error'])){
             return false;
-        }else{
-            return true;
         }
+        
+        return true;
     }
 
     public function getRedirectMethod()
