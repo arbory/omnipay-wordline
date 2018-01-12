@@ -2,7 +2,7 @@
 
 namespace Omnipay\FirstDataLatvia\Messages;
 
-class RefundResponse extends AbstractResponse
+class ReversalResponse extends AbstractResponse
 {
     /**
      * Use only RESULT data to determine transactions state
@@ -13,7 +13,7 @@ class RefundResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        if (isset($this->data['RESULT']) && ($this->data['RESULT'] == 'OK')) {
+        if (isset($this->data['RESULT']) && ($this->data['RESULT'] == 'OK' || $this->data['RESULT'] == 'REVERSED')) {
             return true;
         }
 
@@ -27,16 +27,4 @@ class RefundResponse extends AbstractResponse
     {
         return $this->data['RESULT'] ?? $this->data['RESULT'];
     }
-
-    /**
-     * @return bool
-     */
-    public function getRefundTransaction()
-    {
-        if (isset($this->data['REFUND_TRANS_ID'])) {
-            return $this->data['REFUND_TRANS_ID'];
-        }
-        return false;
-    }
-
 }

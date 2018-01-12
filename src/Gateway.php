@@ -9,6 +9,7 @@ use Omnipay\FirstDataLatvia\Messages\CompleteRequest;
 use Omnipay\FirstDataLatvia\Messages\PurchaseRequest;
 use Omnipay\FirstDataLatvia\Messages\AuthorizeRequest;
 use Omnipay\FirstDataLatvia\Messages\RefundRequest;
+use Omnipay\FirstDataLatvia\Messages\ReversalRequest;
 use Omnipay\FirstDataLatvia\Messages\VoidRequest;
 
 /**
@@ -165,6 +166,17 @@ class Gateway extends AbstractGateway
     public function refund(array $options = [])
     {
         return $this->createRequest(RefundRequest::class, $options);
+    }
+
+    /**
+     * Transaction reversals are used to negate or cancel a Transaction when there has been a technical error.
+     *
+     * @param array $options
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function reverse(array $options = [])
+    {
+        return $this->createRequest(ReversalRequest::class, $options);
     }
 
 
