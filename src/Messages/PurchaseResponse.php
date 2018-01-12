@@ -19,6 +19,11 @@ class PurchaseResponse extends AbstractResponse  implements RedirectResponseInte
 
     public function isRedirect()
     {
+        //on blacklisted client ip error will be returned
+        if(isset($this->data['error'])){
+            return false;
+        }
+        
         return true;
     }
 
