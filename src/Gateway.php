@@ -3,6 +3,7 @@
 namespace Omnipay\FirstDataLatvia;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\FirstDataLatvia\Messages\AuthorizeRecurringRequest;
 use Omnipay\FirstDataLatvia\Messages\CaptureRequest;
 use Omnipay\FirstDataLatvia\Messages\CloseDayRequest;
 use Omnipay\FirstDataLatvia\Messages\CompleteRequest;
@@ -11,6 +12,7 @@ use Omnipay\FirstDataLatvia\Messages\AuthorizeRequest;
 use Omnipay\FirstDataLatvia\Messages\RefundRequest;
 use Omnipay\FirstDataLatvia\Messages\ReversalRequest;
 use Omnipay\FirstDataLatvia\Messages\VoidRequest;
+use Omnipay\FirstDataLatvia\Messages\ExecuteRecurringRequest;
 
 /**
  * Class Gateway
@@ -36,7 +38,7 @@ class Gateway extends AbstractGateway
             'certificatePassword' => '',
             'certificatePath' => '',
             'testMode' => false,
-            'clientIP' => $_SERVER['REMOTE_ADDR'] ?? $_SERVER['REMOTE_ADDR']
+//            'clientIP' => $_SERVER['REMOTE_ADDR'] ?? $_SERVER['REMOTE_ADDR']
         );
     }
 
@@ -119,6 +121,28 @@ class Gateway extends AbstractGateway
     public function authorize(array $options = [])
     {
         return $this->createRequest(AuthorizeRequest::class, $options);
+    }
+
+    /**
+     * Authorize for recurring payments
+     *
+     * @param array $options
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function authorizeRecurring(array $options = [])
+    {
+        return $this->createRequest(AuthorizeRecurringRequest::class, $options);
+    }
+
+    /**
+     * Execute recurring payment
+     *
+     * @param array $options
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function executeRecurring(array $options = [])
+    {
+         return $this->createRequest(ExecuteRecurringRequest::class, $options);
     }
 
     /**
