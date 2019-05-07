@@ -194,6 +194,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
         $this->assertSame('Approved', $response->getMessage());
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testCompletePurchaseSuccessWithGET()
@@ -225,6 +226,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
         $this->assertSame('Approved', $response->getMessage());
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testCompletePurchaseFailed()
@@ -257,6 +259,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('Decline (general, no comments)', $response->getMessage());
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testAuthorize()

@@ -13,4 +13,11 @@ namespace Omnipay\FirstDataLatvia\Responses;
  */
 class CompleteResponse extends AbstractResponse
 {
+    /**
+     * @return string|null
+     */
+    public function getTransactionReference(): ?string
+    {
+        return $this->request->getTransactionReference();
+    }
 }
