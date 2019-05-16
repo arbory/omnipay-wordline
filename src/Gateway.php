@@ -80,10 +80,7 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters(): array
     {
         return [
-            'certificatePath' => '',
-            'certificatePassword' => '',
             'testMode' => false,
-            'clientIP' => '',
             'language' => 'EN'
         ];
     }
@@ -98,28 +95,12 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @return string
-     */
-    public function getCertificatePassword(): string
-    {
-        return $this->getParameter('certificatePassword');
-    }
-
-    /**
      * @param string $value
      * @return $this
      */
     public function setCertificatePath($value): self
     {
         return $this->setParameter('certificatePath', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getCertificatePath(): string
-    {
-        return $this->getParameter('certificatePath');
     }
 
     /**
@@ -137,23 +118,6 @@ class Gateway extends AbstractGateway
     public function setLanguage($value)
     {
         return $this->setParameter('language', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientIP(): string
-    {
-        return $this->getParameter('clientIP');
-    }
-
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function setClientIP($value)
-    {
-        return $this->setParameter('clientIP', $value);
     }
 
     /**
