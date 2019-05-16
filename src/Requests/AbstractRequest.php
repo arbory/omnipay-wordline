@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Omnipay\FirstDataLatvia\Requests;
 
 use Omnipay\Common\Message\AbstractRequest as CommonAbstractRequest;
+use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\FirstDataLatvia\Gateway;
 use Omnipay\FirstDataLatvia\Responses\AbstractResponse;
 use Omnipay\Common\Http\ClientInterface;
@@ -103,7 +104,7 @@ abstract class AbstractRequest extends CommonAbstractRequest
      */
     public function sendData($data): AbstractResponse
     {
-        $this->validate('certificatePath', 'certificatePassword');
+        $this->validateCertificate();
 
         $requestMethod = 'POST';
         $requestUrl = $this->getServerEndpoint();
@@ -125,6 +126,25 @@ abstract class AbstractRequest extends CommonAbstractRequest
         $responseObj = $this->createResponse($httpResponse, $responseData);
         $responseObj->setTestMode($this->getTestMode());
         return $responseObj;
+    }
+
+    /**
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     */
+    protected function validateCertificate()
+    {
+        $this->validate('certificatePath', 'certificatePassword');
+
+        # check if certificate exists
+        if (!file_exists($this->getCertificatePath())) {
+            throw new RuntimeException('Unexisting certificate ' . $this->getCertificatePath());
+        }
+
+        // test certificate parse with supplied password
+        $pkeyid = openssl_pkey_get_private('file://' . $this->getCertificatePath(), $this->getCertificatePassword());
+        if (!$pkeyid) {
+            throw new RuntimeException('Unable to load certificate ' . $this->getCertificatePath());
+        }
     }
 
     /**

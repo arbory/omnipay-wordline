@@ -57,8 +57,8 @@ class AbstractRequestTest extends TestCase
 
     public function testSendData()
     {
-        $this->request->setCertificatePath("x");
-        $this->request->setCertificatePassword("y");
+        $this->request->setCertificatePath('tests/Fixtures/keystore.pem');
+        $this->request->setCertificatePassword('XXXX');
         $this->request->setTestMode(false);
 
         // send request to firstdata
@@ -80,6 +80,38 @@ class AbstractRequestTest extends TestCase
         );
         parse_str((string)$httpRequest->getBody(), $postData);
         $this->assertSame($postData, $sentPostData);
+    }
+
+    public function testSendDataMissingConfiguration()
+    {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+        $this->expectExceptionMessage('The certificatePath parameter is required');
+
+        $this->request->sendData(array('some_data' => 'x'));
+    }
+
+    public function testSendDatatUnexistingCertificate()
+    {
+        // initiate new unconfigured gateway
+        $this->request->setCertificatePath('tests/Fixtures/unexisting.pem');
+        $this->request->setCertificatePassword('XXXX');
+
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Unexisting certificate tests/Fixtures/unexisting.pem');
+
+        $this->request->sendData(array('some_data' => 'x'));
+    }
+
+    public function testSendDataInvalidCertificate()
+    {
+        $this->request->setCertificatePath('tests/Fixtures/keystore.pem');
+        // set wrong password
+        $this->request->setCertificatePassword('wrong-password');
+
+        $this->expectException(\Omnipay\Common\Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to load certificate tests/Fixtures/keystore.pem');
+
+        $this->request->sendData(array('some_data' => 'x'));
     }
 
     public function testParseResponse()
