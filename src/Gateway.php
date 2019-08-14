@@ -50,18 +50,26 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * @return array
+     */
+    protected function getHttpClientConfig(): array
+    {
+        return [
+            'allow_redirects' => false,
+            'cookies' => true,
+            'verify' => $this->getParameter('certificatePath'), // this will make use of included CA certificate
+            'cert' => array($this->getParameter('certificatePath'), $this->getParameter('certificatePassword'))
+        ];
+    }
+
+    /**
      * Get the global default HTTP client.
      *
      * @return ClientInterface
      */
     public function getDefaultHttpClient()
     {
-        $guzzleClient = Client::createWithConfig([
-            'allow_redirects' => false,
-            'cookies' => true,
-            'verify' => $this->getParameter('certificatePath'), // this will make use of included CA certificate
-            'cert' => array($this->getParameter('certificatePath'), $this->getParameter('certificatePassword'))
-        ]);
+        $guzzleClient = Client::createWithConfig($this->getHttpClientConfig());
 
         return new \Omnipay\Common\Http\Client($guzzleClient);
     }
