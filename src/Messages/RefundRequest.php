@@ -13,7 +13,7 @@ class RefundRequest extends AbstractRequest
         $data = [
             'command'           => 'k',
             'trans_id'          => $this->getTransactionReference(),
-            'amount'            => $this->getAmount()
+            'amount'            => $this->getAmountInteger()
         ];
 
         return $data;
