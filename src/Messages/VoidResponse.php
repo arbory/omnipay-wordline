@@ -2,9 +2,7 @@
 
 namespace Omnipay\FirstDataLatvia\Messages;
 
-
 class VoidResponse extends AbstractResponse
-
 {
     /**
      * Use only RESULT data to determine transactions state
@@ -15,7 +13,10 @@ class VoidResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        if (isset($this->data['RESULT']) && ($this->data['RESULT'] == 'OK' || $this->data['RESULT'] == 'REVERSED')) {
+        if (isset($this->data['RESULT'])
+            &&
+            (trim($this->data['RESULT']) === 'OK' || $this->data['RESULT'] === 'REVERSED')
+        ) {
             return true;
         }
 
@@ -29,5 +30,4 @@ class VoidResponse extends AbstractResponse
     {
         return $this->data['RESULT'] ?? $this->data['RESULT'];
     }
-
 }

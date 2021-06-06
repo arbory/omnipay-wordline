@@ -27,7 +27,7 @@ class AuthorizeRecurringRequest extends AbstractRequest
     /**
      * @param $httpResponse
      * @param array $data
-     * @return RecurringAuthorizeResponse
+     * @return AuthorizeRecurringResponse
      */
     public function createResponse($httpResponse, array $data)
     {

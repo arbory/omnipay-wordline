@@ -13,7 +13,7 @@ class RefundResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        if (isset($this->data['RESULT']) && ($this->data['RESULT'] == 'OK')) {
+        if (isset($this->data['RESULT']) && (trim($this->data['RESULT']) === 'OK')) {
             return true;
         }
 

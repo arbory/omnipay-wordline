@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Date: Fri, 29 Apr 2019 19:19:21 GMT
+Server: Apache
+Content-Length: 121
+Connection: close
+Content-Type: text/html; charset=utf-8
+
+error: unable to process transaction request
+RESULT: FAILED
+TRANSACTION_ID: kgvfIQvsjmTi9NAqF3VL/ri5Hi0=
+RESULT_CODE: 100

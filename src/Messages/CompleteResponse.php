@@ -13,7 +13,7 @@ class CompleteResponse extends AbstractResponse
     public function isSuccessful()
     {
         // TODO: add here CREATED and Pending state?
-        if(isset($this->data['RESULT']) && $this->data['RESULT'] == 'OK'){
+        if (isset($this->data['RESULT']) && trim($this->data['RESULT']) === 'OK') {
             return true;
         }
 
