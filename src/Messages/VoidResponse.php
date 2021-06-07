@@ -15,7 +15,10 @@ class VoidResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        if (isset($this->data['RESULT']) && ($this->data['RESULT'] == 'OK' || $this->data['RESULT'] == 'REVERSED')) {
+        if (isset($this->data['RESULT'])
+            &&
+            (trim($this->data['RESULT']) === 'OK' || trim($this->data['RESULT']) === 'REVERSED')
+        ) {
             return true;
         }
 
