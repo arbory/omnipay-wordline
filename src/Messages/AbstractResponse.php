@@ -49,7 +49,7 @@ abstract class AbstractResponse extends CommonAbstractResponse
         }
 
         if(isset($this->data['RESULT_CODE'])){
-            return ResultCodeMessages::getDescription((int)$this->data['RESULT_CODE']);
+            return ResultCodeMessages::getDescription($this->data['RESULT_CODE']);
         }
 
         return null;

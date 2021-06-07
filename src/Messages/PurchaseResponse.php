@@ -9,8 +9,8 @@ class PurchaseResponse extends AbstractResponse  implements RedirectResponseInte
 
     public function getTransactionReference()
     {
-        if (isset($this->data['TRANSACTION_ID'])) {
-            return trim($this->data['TRANSACTION_ID']);
+        if(isset($this->data['TRANSACTION_ID'])){
+            return $this->data['TRANSACTION_ID'];
         }
         return null;
     }
