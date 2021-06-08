@@ -12,7 +12,7 @@ class AuthorizeRecurringResponse extends AbstractResponse implements RedirectRes
     public function getTransactionReference()
     {
         if (isset($this->data['TRANSACTION_ID'])) {
-            return $this->data['TRANSACTION_ID'];
+            return trim($this->data['TRANSACTION_ID']);
         }
         return null;
     }

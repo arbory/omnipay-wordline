@@ -7,6 +7,7 @@ use Omnipay\FirstDataLatvia\Messages\AuthorizeRecurringRequest;
 use Omnipay\FirstDataLatvia\Messages\CaptureRequest;
 use Omnipay\FirstDataLatvia\Messages\CloseDayRequest;
 use Omnipay\FirstDataLatvia\Messages\CompleteRequest;
+use Omnipay\FirstDataLatvia\Messages\OverwriteRecurringWithoutPayment;
 use Omnipay\FirstDataLatvia\Messages\PurchaseRequest;
 use Omnipay\FirstDataLatvia\Messages\AuthorizeRequest;
 use Omnipay\FirstDataLatvia\Messages\RefundRequest;
@@ -143,6 +144,17 @@ class Gateway extends AbstractGateway
     public function executeRecurring(array $options = [])
     {
          return $this->createRequest(ExecuteRecurringRequest::class, $options);
+    }
+
+    /**
+     * Overwrite an existing recurring payment with new card data
+     *
+     * @param array $options
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function overwriteRecurringWithoutPayment(array $options = [])
+    {
+        return $this->createRequest(OverwriteRecurringWithoutPayment::class, $options);
     }
 
     /**
