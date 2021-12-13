@@ -10,7 +10,7 @@ namespace Omnipay\FirstDataLatvia;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use Http\Adapter\Guzzle6\Client;
+use Http\Adapter\Guzzle7\Client;
 use Omnipay\FirstDataLatvia\Requests\AuthorizeRequest;
 use Omnipay\FirstDataLatvia\Requests\CaptureRequest;
 use Omnipay\FirstDataLatvia\Requests\CloseDayRequest;

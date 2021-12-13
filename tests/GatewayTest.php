@@ -18,7 +18,7 @@ class GatewayTest extends GatewayTestCase
      */
     protected $options;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -105,7 +105,7 @@ class GatewayTest extends GatewayTestCase
         // `curl -v --cert tests/Fixtures/keystore.pem:XXXX --cacert tests/Fixtures/keystore.pem  https://server.cryptomix.com/secure/`
         $httpResponse = $httpClient->request('GET', $publicClientCertificateTestUrl);
 
-        $this->assertContains('[SSL_CLIENT_S_DN_CN] => test', $httpResponse->getBody()->getContents());
+        $this->assertStringContainsString('[SSL_CLIENT_S_DN_CN] => test', $httpResponse->getBody()->getContents());
     }
 
     public function testPurchaseSuccess()
