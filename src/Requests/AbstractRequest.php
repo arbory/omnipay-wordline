@@ -22,11 +22,13 @@ abstract class AbstractRequest extends CommonAbstractRequest
 {
     /**
      * @var string
+     * phpcs:ignore
      */
     protected $testServerEndpoint = 'https://securepaymentpage-test.baltic.worldline-solutions.com:8443/ecomm/MerchantHandler';
 
     /**
      * @var string
+     * phpcs:ignore
      */
     protected $liveServerEndpoint = 'https://securepaymentpage.baltic.worldline-solutions.com:8443/ecomm/MerchantHandler';
 
