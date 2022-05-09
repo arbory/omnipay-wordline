@@ -69,7 +69,7 @@ class AbstractRequestTest extends TestCase
 
         // test actual headers we are sending
         $headers = array(
-            'Host' => ['secureshop.firstdata.lv:8443'],
+            'Host' => ['securepaymentpage.baltic.worldline-solutions.com:8443'],
             'Content-Type' => ['application/x-www-form-urlencoded']
         );
         $this->assertSame($headers, $httpRequest->getHeaders());
