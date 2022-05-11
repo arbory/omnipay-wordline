@@ -10,12 +10,12 @@ abstract class AbstractResponse extends CommonAbstractResponse
     /**
      * @var string
      */
-    protected $testClientEndpoint = 'https://secureshop-test.firstdata.lv/ecomm/ClientHandler';
+    protected $testClientEndpoint = 'https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler';
 
     /**
      * @var string
      */
-    protected $liveClientEndpoint = 'https://secureshop.firstdata.lv/ecomm/ClientHandler';
+    protected $liveClientEndpoint = 'https://securepaymentpage.baltic.worldline-solutions.com/ecomm/ClientHandler';
 
     protected $testMode = null;
 

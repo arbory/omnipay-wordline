@@ -78,7 +78,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertEquals(null, $response->getRedirectData());
         $this->assertEquals('0AmRNR/ntNUZpeTkHSCGVw1wivc=', $response->getTransactionReference());
         $this->assertEquals('GET', $response->getRedirectMethod());
-        $this->assertEquals('https://secureshop-test.firstdata.lv/ecomm/ClientHandler?trans_id=0AmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+        $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=0AmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
     }
 
     public function testCompletePurchaseSuccess()
@@ -157,7 +157,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertEquals(null, $response->getRedirectData());
         $this->assertEquals('BBmRNR/ntNUZpeTkHSCGVw1wivc=', trim($response->getTransactionReference()));
         $this->assertEquals('GET', $response->getRedirectMethod());
-        $this->assertEquals('https://secureshop-test.firstdata.lv/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+        $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
     }
 
     public function testCompleteAuthorizeSuccess()
@@ -236,7 +236,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertEquals(null, $response->getRedirectData());
         $this->assertEquals('BBmRNR/ntNUZpeTkHSCGVw1wivc=', trim($response->getTransactionReference()));
         $this->assertEquals('GET', $response->getRedirectMethod());
-        $this->assertEquals('https://secureshop-test.firstdata.lv/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+        $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
     }
 
     public function testCaptureSuccess()

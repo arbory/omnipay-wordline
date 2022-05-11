@@ -10,12 +10,12 @@ abstract class AbstractRequest extends CommonAbstractRequest
     /**
      * @var string
      */
-    protected $testServerEndpoint = 'https://secureshop-test.firstdata.lv:8443/ecomm/MerchantHandler';
+    protected $testServerEndpoint = 'https://securepaymentpage-test.baltic.worldline-solutions.com:8443/ecomm/MerchantHandler';
 
     /**
      * @var string
      */
-    protected $liveServerEndpoint = 'https://secureshop.firstdata.lv:8443/ecomm/MerchantHandler';
+    protected $liveServerEndpoint = 'https://securepaymentpage.baltic.worldline-solutions.com:8443/ecomm/MerchantHandler';
 
     /**
      * @param $data array
