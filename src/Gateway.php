@@ -5,25 +5,25 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia;
+namespace Omnipay\Worldline;
 
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Http\Adapter\Guzzle7\Client;
-use Omnipay\FirstDataLatvia\Requests\AuthorizeRequest;
-use Omnipay\FirstDataLatvia\Requests\CaptureRequest;
-use Omnipay\FirstDataLatvia\Requests\CloseDayRequest;
-use Omnipay\FirstDataLatvia\Requests\CompleteRequest;
-use Omnipay\FirstDataLatvia\Requests\PurchaseRequest;
-use Omnipay\FirstDataLatvia\Requests\RefundRequest;
-use Omnipay\FirstDataLatvia\Requests\VoidRequest;
+use Omnipay\Worldline\Requests\AuthorizeRequest;
+use Omnipay\Worldline\Requests\CaptureRequest;
+use Omnipay\Worldline\Requests\CloseDayRequest;
+use Omnipay\Worldline\Requests\CompleteRequest;
+use Omnipay\Worldline\Requests\PurchaseRequest;
+use Omnipay\Worldline\Requests\RefundRequest;
+use Omnipay\Worldline\Requests\VoidRequest;
 use Illuminate\Http\Request;
 
 /**
  * Class Gateway
  *
- * @package Omnipay\FirstDataLatvia
+ * @package Omnipay\Worldline
  */
 class Gateway extends AbstractGateway
 {

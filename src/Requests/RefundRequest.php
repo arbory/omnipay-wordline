@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\RefundResponse;
+use Omnipay\Worldline\Responses\RefundResponse;
 
 /**
  * Class RefundRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class RefundRequest extends AbstractRequest
 {

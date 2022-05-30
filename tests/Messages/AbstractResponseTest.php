@@ -1,8 +1,8 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia;
+namespace Omnipay\Worldline;
 
-use Omnipay\FirstDataLatvia\Responses\AbstractResponse;
+use Omnipay\Worldline\Responses\AbstractResponse;
 use Omnipay\Tests\TestCase;
 
 class AbstractResponseTest extends TestCase
@@ -33,7 +33,7 @@ class AbstractResponseTest extends TestCase
 
     public function testConstructWithErrorOnlyInData()
     {
-        $this->expectException(\Omnipay\FirstDataLatvia\Exceptions\UnexpectedResponse::class);
+        $this->expectException(\Omnipay\Worldline\Exceptions\UnexpectedResponse::class);
         $this->expectExceptionMessage('zxc');
 
         $data = array('error' => 'zxc');

@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\CloseDayResponse;
+use Omnipay\Worldline\Responses\CloseDayResponse;
 
 /**
  * Class CloseDayRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class CloseDayRequest extends AbstractRequest
 {

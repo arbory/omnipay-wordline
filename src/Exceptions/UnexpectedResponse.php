@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Exceptions;
+namespace Omnipay\Worldline\Exceptions;
 
 class UnexpectedResponse extends \Exception
 {

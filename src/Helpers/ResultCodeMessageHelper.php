@@ -1,10 +1,10 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia\Helpers;
+namespace Omnipay\Worldline\Helpers;
 
 /**
  * Class ResultCodeMessageGenerator
- * @package Omnipay\FirstDataLatvia\Helpers
+ * @package Omnipay\Worldline\Helpers
  */
 class ResultCodeMessageHelper
 {

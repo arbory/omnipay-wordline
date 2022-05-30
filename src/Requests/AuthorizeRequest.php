@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\AuthorizeResponse;
+use Omnipay\Worldline\Responses\AuthorizeResponse;
 
 /**
  * Class AuthorizeRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class AuthorizeRequest extends AbstractRequest
 {

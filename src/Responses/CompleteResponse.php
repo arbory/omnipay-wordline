@@ -5,11 +5,11 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Responses;
+namespace Omnipay\Worldline\Responses;
 
 /**
  * Class CompleteResponse
- * @package Omnipay\FirstDataLatvia\Responses
+ * @package Omnipay\Worldline\Responses
  */
 class CompleteResponse extends AbstractResponse
 {

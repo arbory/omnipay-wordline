@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\CompleteResponse;
+use Omnipay\Worldline\Responses\CompleteResponse;
 
 /**
  * Class CompleteRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class CompleteRequest extends AbstractRequest
 {
@@ -45,7 +45,7 @@ class CompleteRequest extends AbstractRequest
      * @param $httpResponse
      * @param array $data
      * @return CompleteResponse
-     * @throws \Omnipay\FirstDataLatvia\Exceptions\UnexpectedResponse
+     * @throws \Omnipay\Worldline\Exceptions\UnexpectedResponse
      */
     public function createResponse($httpResponse, array $data): CompleteResponse
     {

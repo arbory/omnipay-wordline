@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\VoidResponse;
+use Omnipay\Worldline\Responses\VoidResponse;
 
 /**
  * Class VoidRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class VoidRequest extends AbstractRequest
 {

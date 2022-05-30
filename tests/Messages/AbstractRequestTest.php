@@ -1,15 +1,15 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia;
+namespace Omnipay\Worldline;
 
-use Omnipay\FirstDataLatvia\Requests\AbstractRequest;
-use Omnipay\FirstDataLatvia\Responses\AbstractResponse;
+use Omnipay\Worldline\Requests\AbstractRequest;
+use Omnipay\Worldline\Responses\AbstractResponse;
 use Omnipay\Tests\TestCase;
 
 class AbstractRequestTest extends TestCase
 {
     /**
-     * @var \Omnipay\FirstDataLatvia\Requests\AbstractRequest
+     * @var \Omnipay\Worldline\Requests\AbstractRequest
      */
     protected $request;
 
@@ -61,7 +61,7 @@ class AbstractRequestTest extends TestCase
         $this->request->setCertificatePassword('XXXX');
         $this->request->setTestMode(false);
 
-        // send request to firstdata
+        // send request
         $response = $this->request->sendData(array('some_data' => 'x'));
 
         $httpRequests = $this->getMockedRequests();

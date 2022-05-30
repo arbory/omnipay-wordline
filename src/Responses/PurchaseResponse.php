@@ -5,15 +5,15 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Responses;
+namespace Omnipay\Worldline\Responses;
 
 use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
-use Omnipay\FirstDataLatvia\Gateway;
+use Omnipay\Worldline\Gateway;
 
 /**
  * Class PurchaseResponse
- * @package Omnipay\FirstDataLatvia\Responses
+ * @package Omnipay\Worldline\Responses
  */
 class PurchaseResponse extends AbstractResponse implements RedirectResponseInterface
 {

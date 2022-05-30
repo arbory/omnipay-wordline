@@ -5,16 +5,16 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Responses;
+namespace Omnipay\Worldline\Responses;
 
-use Omnipay\FirstDataLatvia\Helpers\ResultCodeMessageHelper;
-use Omnipay\FirstDataLatvia\Exceptions\UnexpectedResponse;
+use Omnipay\Worldline\Helpers\ResultCodeMessageHelper;
+use Omnipay\Worldline\Exceptions\UnexpectedResponse;
 use Omnipay\Common\Message\AbstractResponse as CommonAbstractResponse;
 use Omnipay\Common\Message\RequestInterface;
 
 /**
  * Class AbstractResponse
- * @package Omnipay\FirstDataLatvia\Responses
+ * @package Omnipay\Worldline\Responses
  */
 abstract class AbstractResponse extends CommonAbstractResponse
 {

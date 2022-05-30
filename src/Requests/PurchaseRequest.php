@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
-use Omnipay\FirstDataLatvia\Responses\PurchaseResponse;
+use Omnipay\Worldline\Responses\PurchaseResponse;
 
 /**
  * Class PurchaseRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 class PurchaseRequest extends AbstractRequest
 {
@@ -34,7 +34,7 @@ class PurchaseRequest extends AbstractRequest
      * @param $httpResponse
      * @param array $data
      * @return PurchaseResponse
-     * @throws \Omnipay\FirstDataLatvia\Exceptions\UnexpectedResponse
+     * @throws \Omnipay\Worldline\Exceptions\UnexpectedResponse
      */
     public function createResponse($httpResponse, array $data): PurchaseResponse
     {

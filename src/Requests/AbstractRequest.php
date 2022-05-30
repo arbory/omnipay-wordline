@@ -5,18 +5,18 @@
  */
 declare(strict_types=1);
 
-namespace Omnipay\FirstDataLatvia\Requests;
+namespace Omnipay\Worldline\Requests;
 
 use Omnipay\Common\Message\AbstractRequest as CommonAbstractRequest;
 use Omnipay\Common\Exception\RuntimeException;
-use Omnipay\FirstDataLatvia\Gateway;
-use Omnipay\FirstDataLatvia\Responses\AbstractResponse;
+use Omnipay\Worldline\Gateway;
+use Omnipay\Worldline\Responses\AbstractResponse;
 use Omnipay\Common\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 /**
  * Class AbstractRequest
- * @package Omnipay\FirstDataLatvia\Requests
+ * @package Omnipay\Worldline\Requests
  */
 abstract class AbstractRequest extends CommonAbstractRequest
 {
