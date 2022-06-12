@@ -9,7 +9,7 @@
     },
     "require": {
       "omnipay/common": "~3.0",
-        "php-http/guzzle7-adapter": "^1.0"
+      "php-http/guzzle7-adapter": "^1.0"
     },
     "require-dev": {
       "php": "^8.0|^8.1",
