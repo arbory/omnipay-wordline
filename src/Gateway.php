@@ -9,6 +9,8 @@ namespace Omnipay\Worldline;
 
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Http\ClientInterface;
+use Omnipay\Worldline\Messages\AuthorizeRecurringRequest;
+use Omnipay\Worldline\Messages\ExecuteRecurringRequest;
 use Omnipay\Worldline\Messages\OverwriteRecurringWithoutPayment;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Http\Adapter\Guzzle7\Client;
