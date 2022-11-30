@@ -1,15 +1,15 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia;
+namespace Omnipay\Worldline;
 
 use Omnipay\Tests\GatewayTestCase;
-use Guzzle\Http\ClientInterface;
+use Omnipay\Common\Http\ClientInterface;
 use Http\Adapter\Guzzle6\Client;
 
 class GatewayTest extends GatewayTestCase
 {
     /**
-     * @var \Omnipay\FirstDataLatvia\Gateway
+     * @var \Omnipay\Worldline\Gateway
      */
     protected $gateway;
 
@@ -18,7 +18,7 @@ class GatewayTest extends GatewayTestCase
      */
     protected $options;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,6 +50,11 @@ class GatewayTest extends GatewayTestCase
                 return $this->httpClient;
             }
 
+            public function getDefaultHttpClient()
+            {
+                throw new \Exception("getDefaultHttpClient method called");
+            }
+
             public function createRequest($class, array $parameters)
             {
                 return parent::createRequest($class, $parameters);
@@ -64,21 +69,99 @@ class GatewayTest extends GatewayTestCase
         $this->assertEquals($this->getHttpClient(), $gateway->getHttpClient());
     }
 
+    public function testConstructWithouthHttpClientPassed()
+    {
+        $gateway = $this->initializeCustomGateway(null);
+        $this->assertNull($gateway->getHttpClient());
+    }
+
+    public function testCreateRequestWithtHttpClientAssigned()
+    {
+        $gateway = $this->initializeCustomGateway($this->getHttpClient());
+        $request = $gateway->createRequest(\Omnipay\Worldline\Requests\CompleteRequest::class, array());
+        $this->assertNotNull($request);
+    }
+
+    public function testCreateRequestWithouttHttpClientAssigned()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('getDefaultHttpClient method called');
+
+        $gateway = $this->initializeCustomGateway(null);
+        $request = $gateway->createRequest(\Omnipay\Worldline\Requests\CompleteRequest::class, array());
+        $this->assertNull($request);
+    }
+
+    public function testGetDefaultHttpClient()
+    {
+        $httpClient = $this->gateway->getDefaultHttpClient();
+        $publicClientCertificateTestUrl = 'https://server.cryptomix.com/secure/';
+
+        // test against public client certificate validation service (it accepts any client sertificate and returns this
+        // certificate information)
+        // altought on some environments this test will fail as there is unidentified error with some openssl/curl? versions.
+        // tt's reporting "unable to get local issuer certificate" when using self signed test client certificate.
+        // same does not happens with curl command line client:
+        // `curl -v --cert tests/Fixtures/keystore.pem:XXXX --cacert tests/Fixtures/keystore.pem  https://server.cryptomix.com/secure/`
+        $httpResponse = $httpClient->request('GET', $publicClientCertificateTestUrl);
+
+        $this->assertStringContainsString('[SSL_CLIENT_S_DN] => CN=test', $httpResponse->getBody()->getContents());
+    }
+
     public function testPurchaseSuccess()
     {
         $this->setMockHttpResponse('purchaseSuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->purchase($this->options)->send();
 
-        // test firstdata response
-        $this->assertFalse($response->isSuccessful());
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'v',
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1',
+            'description' => 'purchase description',
+            'language' => 'EN',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
+        $this->assertTrue($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertFalse($response->isTransparentRedirect());
-        $this->assertEquals(null, $response->getRedirectData());
+        $this->assertEquals(array(), $response->getRedirectData());
         $this->assertEquals('0AmRNR/ntNUZpeTkHSCGVw1wivc=', $response->getTransactionReference());
         $this->assertEquals('GET', $response->getRedirectMethod());
         $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=0AmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+    }
+
+    public function testPurchaseFailed()
+    {
+        $this->setMockHttpResponse('purchaseFailed.txt');
+
+        // expect exception as this cannot be user related error
+        $this->expectException(\Omnipay\Worldline\Exceptions\UnexpectedResponse::class);
+        $this->expectExceptionMessage('parameter \'command\' not specified');
+
+        // send request
+        $response = $this->gateway->purchase($this->options)->send();
+
+        // test actual data we are sending
+        $sentPostData = array(
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1',
+            'description' => 'purchase description',
+            'language' => 'EN',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
     }
 
     public function testCompletePurchaseSuccess()
@@ -92,14 +175,26 @@ class GatewayTest extends GatewayTestCase
         $this->getHttpRequest()->setMethod('POST');
         $this->getHttpRequest()->request->replace($clientPostData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completePurchase($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
         $this->assertSame('Approved', $response->getMessage());
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testCompletePurchaseSuccessWithGET()
@@ -112,14 +207,27 @@ class GatewayTest extends GatewayTestCase
         );
         $this->getHttpRequest()->query->replace($clientGetData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completePurchase($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
         $this->assertSame('Approved', $response->getMessage());
+
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testCompletePurchaseFailed()
@@ -133,31 +241,84 @@ class GatewayTest extends GatewayTestCase
         $this->getHttpRequest()->setMethod('POST');
         $this->getHttpRequest()->request->replace($clientPostData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completePurchase($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('unable to process transaction request', trim($response->getMessage()));
+        $this->assertSame('Decline (general, no comments)', $response->getMessage());
+        $this->assertSame('12345678', $response->getTransactionReference());
     }
 
     public function testAuthorize()
     {
         $this->setMockHttpResponse('authorizeSuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->authorize($this->options)->send();
 
-        // test firstdata response
-        $this->assertFalse($response->isSuccessful());
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'a',
+            'msg_type' => 'DMS',
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1',
+            'description' => 'purchase description',
+            'language' => 'EN',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
+        $this->assertTrue($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertFalse($response->isTransparentRedirect());
-        $this->assertEquals(null, $response->getRedirectData());
-        $this->assertEquals('BBmRNR/ntNUZpeTkHSCGVw1wivc=', trim($response->getTransactionReference()));
+        $this->assertEquals(array(), $response->getRedirectData());
+        $this->assertEquals('BBmRNR/ntNUZpeTkHSCGVw1wivc=', $response->getTransactionReference());
         $this->assertEquals('GET', $response->getRedirectMethod());
         $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+    }
+
+    public function testAuthorizeFailed()
+    {
+        $this->setMockHttpResponse('authorizeFailed.txt');
+
+        // expect exception as this cannot be user related error
+        $this->expectException(\Omnipay\Worldline\Exceptions\UnexpectedResponse::class);
+        $this->expectExceptionMessage('parameter \'command\' not specified');
+
+        // send request
+        $response = $this->gateway->authorize($this->options)->send();
+
+        // test actual data we are sending
+        $sentPostData = array(
+            'msg_type' => 'DMS',
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1',
+            'description' => 'purchase description',
+            'language' => 'EN',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
     }
 
     public function testCompleteAuthorizeSuccess()
@@ -171,10 +332,21 @@ class GatewayTest extends GatewayTestCase
         $this->getHttpRequest()->setMethod('POST');
         $this->getHttpRequest()->request->replace($clientPostData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completeAuthorize($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
@@ -191,10 +363,21 @@ class GatewayTest extends GatewayTestCase
         );
         $this->getHttpRequest()->query->replace($clientGetData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completeAuthorize($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertFalse($response->isCancelled());
@@ -212,14 +395,25 @@ class GatewayTest extends GatewayTestCase
         $this->getHttpRequest()->setMethod('POST');
         $this->getHttpRequest()->request->replace($clientPostData);
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->completeAuthorize($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'c',
+            'trans_id' => '12345678',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('unable to process transaction request', trim($response->getMessage()));
+        $this->assertSame('Decline (general, no comments)', $response->getMessage());
     }
 
     public function testOverwriteRecurring()
@@ -228,7 +422,6 @@ class GatewayTest extends GatewayTestCase
 
         // send request to firstdata
         $response = $this->gateway->overwriteRecurringWithoutPayment($this->options)->send();
-
         // test firstdata response
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
@@ -237,16 +430,31 @@ class GatewayTest extends GatewayTestCase
         $this->assertEquals('BBmRNR/ntNUZpeTkHSCGVw1wivc=', trim($response->getTransactionReference()));
         $this->assertEquals('GET', $response->getRedirectMethod());
         $this->assertEquals('https://securepaymentpage-test.baltic.worldline-solutions.com/ecomm/ClientHandler?trans_id=BBmRNR%2FntNUZpeTkHSCGVw1wivc%3D', $response->getRedirectUrl());
+
     }
 
     public function testCaptureSuccess()
     {
         $this->setMockHttpResponse('captureSuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->capture($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 't',
+            'msg_type' => 'DMS',
+            'trans_id' => 'abc123',
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -257,24 +465,49 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('captureFailed.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->capture($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 't',
+            'msg_type' => 'DMS',
+            'trans_id' => 'abc123',
+            'amount' => '1000',
+            'currency' => '978',
+            'client_ip_addr' => '127.0.0.1'
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('unable to process transaction request', trim($response->getMessage()));
+        $this->assertSame('Decline (general, no comments)', $response->getMessage());
     }
 
     public function testVoidSuccess()
     {
         $this->setMockHttpResponse('voidSuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->void($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'r',
+            'amount' => '1000',
+            'trans_id' => 'abc123',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -285,10 +518,21 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('voidFailed.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->void($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'r',
+            'amount' => '1000',
+            'trans_id' => 'abc123',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -299,10 +543,21 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('refundSuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->refund($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'k',
+            'amount' => '1000',
+            'trans_id' => 'abc123',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -314,10 +569,21 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('refundFailed.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->refund($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'k',
+            'amount' => '1000',
+            'trans_id' => 'abc123',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -328,10 +594,19 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('closeDaySuccess.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->closeDay($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'b',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());
@@ -342,10 +617,19 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('closeDayFailed.txt');
 
-        // send request to firstdata
+        // send request
         $response = $this->gateway->closeDay($this->options)->send();
 
-        // test firstdata response
+        // test actual data we are sending
+        $sentPostData = array(
+            'command' => 'b',
+        );
+        $httpRequests = $this->getMockedRequests();
+        $httpRequest = $httpRequests[0];
+        parse_str((string)$httpRequest->getBody(), $postData);
+        $this->assertSame($postData, $sentPostData);
+
+        // test response
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isCancelled());
         $this->assertFalse($response->isRedirect());

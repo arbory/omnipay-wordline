@@ -1,31 +1,84 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia;
+/**
+ * @see https://wiki.php.net/rfc/scalar_type_hints_v5
+ */
+declare(strict_types=1);
+
+namespace Omnipay\Worldline;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\FirstDataLatvia\Messages\AuthorizeRecurringRequest;
-use Omnipay\FirstDataLatvia\Messages\CaptureRequest;
-use Omnipay\FirstDataLatvia\Messages\CloseDayRequest;
-use Omnipay\FirstDataLatvia\Messages\CompleteRequest;
-use Omnipay\FirstDataLatvia\Messages\OverwriteRecurringWithoutPayment;
-use Omnipay\FirstDataLatvia\Messages\PurchaseRequest;
-use Omnipay\FirstDataLatvia\Messages\AuthorizeRequest;
-use Omnipay\FirstDataLatvia\Messages\RefundRequest;
-use Omnipay\FirstDataLatvia\Messages\ReversalRequest;
-use Omnipay\FirstDataLatvia\Messages\VoidRequest;
-use Omnipay\FirstDataLatvia\Messages\ExecuteRecurringRequest;
+use Omnipay\Common\Http\ClientInterface;
+use Omnipay\Worldline\Messages\OverwriteRecurringWithoutPayment;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Http\Adapter\Guzzle7\Client;
+use Omnipay\Worldline\Requests\AuthorizeRequest;
+use Omnipay\Worldline\Requests\CaptureRequest;
+use Omnipay\Worldline\Requests\CloseDayRequest;
+use Omnipay\Worldline\Requests\CompleteRequest;
+use Omnipay\Worldline\Requests\PurchaseRequest;
+use Omnipay\Worldline\Requests\RefundRequest;
+use Omnipay\Worldline\Requests\VoidRequest;
+use Illuminate\Http\Request;
 
 /**
  * Class Gateway
  *
- * @package Omnipay\FirstDataLatvia
+ * @package Omnipay\Worldline
  */
 class Gateway extends AbstractGateway
 {
+    public const TRANSACTION_ID_KEY = 'TRANSACTION_ID';
+
+    public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null)
+    {
+        $this->httpClient = $httpClient;
+        $this->httpRequest = $httpRequest ?: $this->getDefaultHttpRequest();
+        $this->initialize();
+    }
+
+    /**
+     * Create and initialize a request object
+     *
+     * @param string $class The request class name
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    protected function createRequest($class, array $parameters)
+    {
+        $this->httpClient = $this->httpClient ?: $this->getDefaultHttpClient();
+        return parent::createRequest($class, $parameters);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getHttpClientConfig(): array
+    {
+        return [
+            'allow_redirects' => false,
+            'cookies' => true,
+            'verify' => $this->getParameter('certificatePath'), // this will make use of included CA certificate
+            'cert' => array($this->getParameter('certificatePath'), $this->getParameter('certificatePassword'))
+        ];
+    }
+
+    /**
+     * Get the global default HTTP client.
+     *
+     * @return ClientInterface
+     */
+    public function getDefaultHttpClient()
+    {
+        $guzzleClient = Client::createWithConfig($this->getHttpClientConfig());
+
+        return new \Omnipay\Common\Http\Client($guzzleClient);
+    }
+
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'First Data Latvia';
     }
@@ -33,38 +86,28 @@ class Gateway extends AbstractGateway
     /**
      * @return array
      */
-    public function getDefaultParameters()
+    public function getDefaultParameters(): array
     {
-        return array(
-            'certificatePassword' => '',
-            'certificatePath' => '',
+        return [
             'testMode' => false,
-//            'clientIP' => $_SERVER['REMOTE_ADDR'] ?? $_SERVER['REMOTE_ADDR']
-        );
+            'language' => 'EN'
+        ];
     }
 
     /**
      * @param string $value
      * @return $this
      */
-    public function setCertificatePassword($value)
+    public function setCertificatePassword($value): self
     {
         return $this->setParameter('certificatePassword', $value);
     }
 
     /**
-     * @return string
-     */
-    public function getCertificatePassword()
-    {
-        return $this->getParameter('certificatePassword');
-    }
-
-    /**
      * @param string $value
      * @return $this
      */
-    public function setCertificatePath($value)
+    public function setCertificatePath($value): self
     {
         return $this->setParameter('certificatePath', $value);
     }
@@ -72,34 +115,26 @@ class Gateway extends AbstractGateway
     /**
      * @return string
      */
-    public function getCertificatePath()
+    public function getLanguage(): string
     {
-        return $this->getParameter('certificatePath');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getClientIP()
-    {
-        return $this->getParameter('clientIP');
+        return $this->getParameter('language');
     }
 
     /**
      * @param $value
      * @return $this
      */
-    public function setClientIP($value)
+    public function setLanguage($value)
     {
-        return $this->setParameter('clientIP', $value);
+        return $this->setParameter('language', $value);
     }
 
     /**
      * Execute SMS transaction
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return PurchaseRequest|AbstractRequest
      */
-    public function purchase(array $options = [])
+    public function purchase(array $options = []): PurchaseRequest
     {
         return $this->createRequest(PurchaseRequest::class, $options);
     }
@@ -107,9 +142,9 @@ class Gateway extends AbstractGateway
     /**
      * Request transaction result
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|CompleteRequest
      */
-    public function completePurchase(array $options = [])
+    public function completePurchase(array $options = []): CompleteRequest
     {
         return $this->createRequest(CompleteRequest::class, $options);
     }
@@ -117,9 +152,9 @@ class Gateway extends AbstractGateway
     /**
      * Execute DMS1 transaction
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|AuthorizeRequest
      */
-    public function authorize(array $options = [])
+    public function authorize(array $options = []): AuthorizeRequest
     {
         return $this->createRequest(AuthorizeRequest::class, $options);
     }
@@ -152,7 +187,7 @@ class Gateway extends AbstractGateway
      * @param array $options
      * @return \Omnipay\Common\Message\AbstractRequest
      */
-    public function overwriteRecurringWithoutPayment(array $options = [])
+    public function overwriteRecurringWithoutPayment(array $options = []): OverwriteRecurringWithoutPayment
     {
         return $this->createRequest(OverwriteRecurringWithoutPayment::class, $options);
     }
@@ -163,9 +198,9 @@ class Gateway extends AbstractGateway
      * DMS1 within 3 minutes you perform DMS2 transaction, you don’t need to request additionally DMS1
      * transaction result. For DMS2 transaction result is returned automatically.
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|CompleteRequest
      */
-    public function completeAuthorize(array $options = [])
+    public function completeAuthorize(array $options = []): CompleteRequest
     {
         return $this->createRequest(CompleteRequest::class, $options);
     }
@@ -173,20 +208,20 @@ class Gateway extends AbstractGateway
     /**
      * Execute DMS2 transaction
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|CaptureRequest
      */
-    public function capture(array $options = [])
+    public function capture(array $options = []): CaptureRequest
     {
         return $this->createRequest(CaptureRequest::class, $options);
     }
 
     /**
-     * Transaction reversals are used to negate or cancel a Transaction when there has been a technical error. Technical error!
+     * Transaction reversals are used to negate or cancel a Transaction when there has been a technical error.
      *
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|VoidRequest
      */
-    public function void(array $options = [])
+    public function void(array $options = []): VoidRequest
     {
         return $this->createRequest(VoidRequest::class, $options);
     }
@@ -197,31 +232,20 @@ class Gateway extends AbstractGateway
      * to a prior purchase. MasterCard explicitly states, that refunds can be used only for these purposes.
      *
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|RefundRequest
      */
-    public function refund(array $options = [])
+    public function refund(array $options = []): RefundRequest
     {
         return $this->createRequest(RefundRequest::class, $options);
-    }
-
-    /**
-     * Transaction reversals are used to negate or cancel a Transaction when there has been a technical error.
-     *
-     * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
-     */
-    public function reverse(array $options = [])
-    {
-        return $this->createRequest(ReversalRequest::class, $options);
     }
 
 
     /**
      * Closes business day
      * @param array $options
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return AbstractRequest|CloseDayRequest
      */
-    public function closeDay(array $options = [])
+    public function closeDay(array $options = []): CloseDayRequest
     {
         return $this->createRequest(CloseDayRequest::class, $options);
     }

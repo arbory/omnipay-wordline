@@ -1,6 +1,8 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia\Messages;
+namespace Omnipay\Worldline\Messages;
+
+use Omnipay\Worldline\Requests\AbstractRequest;
 
 class AuthorizeRecurringRequest extends AbstractRequest
 {
@@ -17,7 +19,7 @@ class AuthorizeRecurringRequest extends AbstractRequest
             'language' => $this->getLanguage(), // authorization language identifier, optional (up to 32 characters)
             'msg_type' => 'AUTH',
             'biller_client_id' => $this->getUniqueId(), // recurring payment identifier, mandatory (up to 30 characters)
-            'perspayee_expiry' => $this->getExpiryDate(), // preferred deadline for a Recurring payment, mandatory (MMYY),
+            'perspayee_expiry' => $this->getExpiryDate(), // preferred deadline for a payment, mandatory (MMYY),
             'perspayee_gen' => '1'
         ];
 

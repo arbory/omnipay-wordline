@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia\Messages;
+namespace Omnipay\Worldline\Messages;
 
 class OverwriteRecurringWithoutPayment extends AuthorizeRecurringRequest
 {
@@ -15,8 +15,8 @@ class OverwriteRecurringWithoutPayment extends AuthorizeRecurringRequest
             'client_ip_addr' => $this->getClientIp(), // client’s IP address, mandatory (15 characters)
             'desc' => $this->getDescription(), // transaction details, mandatory (up to 125 characters)
             'language' => $this->getLanguage(), // authorization language identifier, optional (up to 32 characters)
-            'biller_client_id' => $this->getUniqueId(), // recurring payment identifier, mandatory (up to 30 characters)
-            'perspayee_expiry' => $this->getExpiryDate(), // preferred deadline for a Recurring payment, mandatory (MMYY),
+            'biller_client_id' => $this->getUniqueId(), // payment identifier, mandatory (up to 30 characters)
+            'perspayee_expiry' => $this->getExpiryDate(), // preferred deadline for a  payment, mandatory (MMYY),
             'perspayee_overwrite' => '1'
         ];
 

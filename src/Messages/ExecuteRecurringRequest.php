@@ -1,6 +1,8 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia\Messages;
+namespace Omnipay\Worldline\Messages;
+
+use Omnipay\Worldline\Requests\AbstractRequest;
 
 class ExecuteRecurringRequest extends AbstractRequest
 {
@@ -13,7 +15,8 @@ class ExecuteRecurringRequest extends AbstractRequest
             'command' => 'e', // request for executing subsequent recurring transaction
             'amount' => $this->getAmountInteger(), // transaction amount in minor units, mandatory (up to 12 digits)
             'currency' => $this->getCurrencyNumeric(), // transaction currency code (ISO 4217), mandatory, (3 digits)
-            'client_ip_addr' => $this->getClientIp(), // client’s IP address (the same IP address which was provided when registered recurring payment)
+            // client’s IP address (the same IP address which was provided when registered recurring payment)
+            'client_ip_addr' => $this->getClientIp(),
             'desc' => $this->getDescription(), // transaction details, mandatory (up to 125 characters)
             'biller_client_id' => $this->getUniqueId(), // recurring payment identifier, mandatory (up to 30 characters)
         ];

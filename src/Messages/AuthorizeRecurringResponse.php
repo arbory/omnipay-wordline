@@ -1,8 +1,9 @@
 <?php
 
-namespace Omnipay\FirstDataLatvia\Messages;
+namespace Omnipay\Worldline\Messages;
 
 use Omnipay\Common\Message\RedirectResponseInterface;
+use Omnipay\Worldline\Responses\AbstractResponse;
 
 class AuthorizeRecurringResponse extends AbstractResponse implements RedirectResponseInterface
 {
@@ -20,7 +21,7 @@ class AuthorizeRecurringResponse extends AbstractResponse implements RedirectRes
     /**
      * @return bool
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return false; //needs redirect
     }
@@ -61,5 +62,4 @@ class AuthorizeRecurringResponse extends AbstractResponse implements RedirectRes
     {
         return $this->getClientEndpoint() . '?' . http_build_query(['trans_id' => $this->getTransactionReference()]);
     }
-
 }

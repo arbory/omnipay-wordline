@@ -1,20 +1,26 @@
 {
-    "name": "arbory/omnipay-first-data-latvia",
-    "description": "First Data Latvia omnipay package",
+    "name": "arbory/omnipay-worldline",
+    "description": "Worldline omnipay package",
     "type": "library",
     "authors": [
-        {
-            "name": "Martin Ungur",
-            "email": "mungurs@gmail.com"
-        }
     ],
     "autoload": {
-      "psr-4": { "Omnipay\\FirstDataLatvia\\" : "src/" }
+      "psr-4": { "Omnipay\\Worldline\\" : "src/" }
     },
     "require": {
-      "omnipay/common": "~2.0"
+      "omnipay/common": "~3.0",
+        "php-http/guzzle7-adapter": "^1.0"
     },
     "require-dev": {
-      "omnipay/tests": "~2.0"
+      "php": "^8.0|^8.1",
+      "omnipay/tests": "^4",
+      "squizlabs/php_codesniffer": "^3",
+      "phpro/grumphp": "^1",
+      "php-coveralls/php-coveralls": "^2"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
     }
 }
