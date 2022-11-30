@@ -130,7 +130,7 @@ class GatewayTest extends GatewayTestCase
         $this->assertSame($postData, $sentPostData);
 
         // test response
-        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertFalse($response->isTransparentRedirect());
         $this->assertEquals(array(), $response->getRedirectData());

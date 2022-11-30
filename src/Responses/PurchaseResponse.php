@@ -30,7 +30,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      */
     public function isSuccessful(): bool
     {
-        return !isset($this->data['error']);
+        return false;
     }
 
     /**
