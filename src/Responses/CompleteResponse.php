@@ -14,6 +14,14 @@ namespace Omnipay\Worldline\Responses;
 class CompleteResponse extends AbstractResponse
 {
     /**
+     * @return bool
+     */
+    public function isSuccessful(): bool
+    {
+        return !isset($this->data['error']);
+    }
+
+    /**
      * @return string|null
      */
     public function getTransactionReference(): ?string
