@@ -59,7 +59,7 @@ class ExecuteRecurringResponse extends AbstractResponse implements RedirectRespo
     /**
      * @return string
      */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         if (isset($this->data['RESULT_CODE'])) {
             $code = intval($this->data['RESULT_CODE']);
