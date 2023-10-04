@@ -24,6 +24,7 @@ abstract class AbstractResponse extends CommonAbstractResponse
 
     protected const RESULT_KEY = 'RESULT';
     protected const RESULT_CODE_KEY = 'RESULT_CODE';
+    protected const RESULT_SUCCESS_CODE = '000';
 
     /**
      * @var string

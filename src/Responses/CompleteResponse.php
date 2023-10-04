@@ -18,7 +18,13 @@ class CompleteResponse extends AbstractResponse
      */
     public function isSuccessful(): bool
     {
-        return !isset($this->data['error']);
+        return (!isset($this->data['error'])) // make it backwards compatible
+            &&
+            (
+                isset($this->data[self::RESULT_CODE_KEY])
+                &&
+                $this->data[self::RESULT_CODE_KEY] === self::RESULT_SUCCESS_CODE
+            );
     }
 
     /**
